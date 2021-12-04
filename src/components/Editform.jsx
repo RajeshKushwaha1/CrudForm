@@ -1,74 +1,67 @@
-import React,{useState,useEffect} from 'react'
-import {useNavigate} from "react-router-dom"
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CrossIcon from "./img/cross.svg";
 
 const Editform = () => {
+  const navigate = useNavigate();
+  const [cross, setCross] = useState(true);
 
-    const navigate = useNavigate();
-    const [cross, setCross] = useState(true);
-
-    const [contact, setContact] = useState({
-        name: "",
-        email: "",
-        mob: "",
-        psw: "",
-        psw_repeat: "",
-      });
+  const [contact, setContact] = useState({
+    name: "",
+    email: "",
+    mob: "",
+    psw: "",
+    psw_repeat: "",
+  });
   const [loginData, setLoginData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [id, setId] = useState(null);
-    const handlingEnterData = (e) => {
-        const {name,value} = e.target;
-        setContact({ ...contact, [name]: value });
-    };
-    
-    useEffect(() => {
-      setContact(JSON.parse(localStorage.getItem('userData'))[0]);
-      setLoginData(JSON.parse(localStorage.getItem('userData'))[0]);
-      setAllData(JSON.parse(localStorage.getItem('contacts')));
-    }, [])
 
-    // let index;
-    // function findIndex(data,arr){
-    //     arr.forEach((el,index)=>{
-    //       if(el.email===data){
-    //        setId(index);
-    //        index=index;
-    //       }
-    //     })
-    // }
-    
-    const handleSubmit = (e) =>{
-      e.preventDefault();
-      console.log(contact);
-      // findIndex(loginData.email,allData);
-      // setContact(contact);
-      // console.log(id,index);
-      // const found = allData.find(element => element.email === loginData[0].email);
-      // const replaced=allData.map(obj => [loginData].find(o => o.email === obj.email) || obj);
-      // localStorage.setItem('userData',JSON.stringify(contact));
-      // console.log(replaced);
-      // if(replaced){
-      //   allData[found.id]=contact;
-      //   setAllData(replaced);
-      //   // localStorage.setItem('contacts',JSON.stringify(setContact(replaced)));
-      // }
-      // navigate("/home");
-    }
-   
-    const HandleCross = () =>{
-      setCross(!cross);
+  useEffect(() => {
+    setContact(JSON.parse(localStorage.getItem("userData"))[0]);
+    setLoginData(JSON.parse(localStorage.getItem("userData")));
+    setAllData(JSON.parse(localStorage.getItem("contacts")));
+  }, []);
+
+  const handlingEnterData = (e) => {
+    const { name, value } = e.target;
+    setContact({ ...contact, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let id;
+    const found = allData.find((element,index) => {
+      if(element.email === loginData[0].email){
+        id=index;
+        return element;
+      }
+    });
+    allData[id]=contact;
+    localStorage.setItem("userData", JSON.stringify([contact]));
+    localStorage.setItem("contacts", JSON.stringify(allData));
+    setTimeout(() => {
       navigate("/home");
-    }
+    }, 500);
+  };
 
-    return (
-        <>
-        <form onSubmit={handleSubmit}>
-        <div className="container"> 
-          <h1 className="text-center">Update Form</h1><img src={CrossIcon} alt="CrossIcon" className="cross" onClick={HandleCross}/>
-          <p className="text-center">
-            Please fill in this form to Update.
-          </p>
+  const HandleCross = () => {
+    setCross(!cross);
+    navigate("/home");
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="container">
+          <h1 className="text-center">Update Form</h1>
+          <img
+            src={CrossIcon}
+            alt="CrossIcon"
+            className="cross"
+            onClick={HandleCross}
+          />
+          <p className="text-center">Please fill in this form to Update.</p>
           <hr />
           <label htmlFor="email">
             <b>Name</b>
@@ -137,14 +130,12 @@ const Editform = () => {
           />
 
           <div className="clearfix text-center">
-            <button  className="signupbtn text-center">
-              Update
-            </button>
+            <button className="signupbtn text-center">Update</button>
           </div>
         </div>
       </form>
-        </>
-    )
-}
+    </>
+  );
+};
 
 export default Editform;
