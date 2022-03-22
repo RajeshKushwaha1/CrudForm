@@ -106,12 +106,6 @@ const SignUp = () => {
       let docArray = JSON.parse(docs) || [];
       docArray = [...docArray, newRecord];
       localStorage.setItem("contacts", JSON.stringify(docArray));
-
-    // function getdata(key, value){
-    //     localStorage.setItem(key,value);
-    // }
-    // getdata("contacts", JSON.stringify(docArray));
-
     } else {
       let docArray = [newRecord];
       localStorage.setItem("contacts", JSON.stringify(docArray));

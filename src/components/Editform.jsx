@@ -6,6 +6,17 @@ const Editform = () => {
   const navigate = useNavigate();
   const [cross, setCross] = useState(true);
 
+  const [validationdata, setValidationdata] = useState({
+    datafields:{
+      name: "",
+    email: "",
+    mob: "",
+    psw: "",
+    psw_repeat: "",
+    },
+    errors:{},
+  })
+
   const [contact, setContact] = useState({
     name: "",
     email: "",
@@ -15,7 +26,7 @@ const Editform = () => {
   });
   const [loginData, setLoginData] = useState([]);
   const [allData, setAllData] = useState([]);
-  const [id, setId] = useState(null);
+  
 
   useEffect(() => {
     setContact(JSON.parse(localStorage.getItem("userData"))[0]);
@@ -24,12 +35,24 @@ const Editform = () => {
   }, []);
 
   const handlingEnterData = (e) => {
-    const { name, value } = e.target;
+    validationdata.datafields[e.target.name]=e.target.value;
+    setValidationdata(...validationdata);
+    // if(validationdata.errors[e.target.value]){
+    //   validationdata.errors[e.target.value]='';
+    // }
+
+    const { name, value } = e.target; 
     setContact({ ...contact, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if(validation()){
+      alert("data successfullt submitted")
+    }
+
+
     let id;
     const found = allData.find((element,index) => {
       if(element.email === loginData[0].email){
@@ -44,6 +67,30 @@ const Editform = () => {
       navigate("/home");
     }, 500);
   };
+  const  validation =()=>{
+    let datafields=validationdata.datafields;
+    console.log(datafields)
+    let errors={};
+    let dataIsValid=true;
+
+    if(!validationdata.datafields["name"]){
+      dataIsValid=false;
+      validationdata.datafields["name"]='';
+      validationdata.errors["name"]="please Enter the name";
+    }
+    if(validationdata.datafields["name"]){
+      dataIsValid=true;
+      validationdata.datafields["name"].match(/^[a-zA-Z\\s]{3}/);
+      validationdata.errors["name"]="please enter valid name";
+    }
+
+    // datafields=validationdata.datafields;
+
+    setValidationdata(...datafields);
+
+    return dataIsValid;
+  }
+
 
   const HandleCross = () => {
     setCross(!cross);
@@ -75,7 +122,7 @@ const Editform = () => {
             autoComplete="off"
             required
           />
-
+          { validationdata.errors['name']}
           <label htmlFor="email">
             <b>Email</b>
           </label>
